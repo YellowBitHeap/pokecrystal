@@ -10,7 +10,6 @@ Things that will be changed or added:
 - All Pokemon available in one save (eventually)
 - Title Screen changed more closely match the localization prototypes.
 - Hopefully new player sprites
-- Not a new feature, but it hopefully will remain Stadium compatible.
 
 This isn't much compared to other hacks, and it isn't (or will be) all that different to the other 251 hacks out there. But its mostly for me to play, honestly.
 
