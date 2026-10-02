@@ -1,4 +1,19 @@
+# Chocolate Crystal
+
 a personalized branch of pokemon crystal.
+The name was inspired by  what I named a Pokemon Emerald rom to differentiate it from the other Emerald hacks I had at the time.
+(It was named Vanilla Emerald, if anyone was wondering.)
+
+Things that will be changed or added:
+
+- Running Shoes
+- All Pokemon available in one save (eventually)
+- Title Screen changed more closely match the localization prototypes.
+- Hopefully new player sprites
+- Not a new feature, but it hopefully will remain Stadium compatible.
+
+This isn't much compared to other hacks, and it isn't (or will be) all that different to the other 251 hacks out there. But its mostly for me to play, honestly.
+
 
 # Pokémon Crystal [![Build Status][ci-badge]][ci]
 
