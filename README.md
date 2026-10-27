@@ -4,15 +4,15 @@ a personalized branch of pokemon crystal.
 The name was inspired by  what I named a Pokemon Emerald rom to differentiate it from the other Emerald hacks I had at the time.
 (It was named Vanilla Emerald, if anyone was wondering.)
 
-Things that will be changed or added:
+Things that have been changed or added:
 
-- Running Shoes
-- All Pokemon available in one save (eventually)
+- Running Shoes and 60fps
 - Title Screen changed more closely match the localization prototypes.
-- Hopefully new player sprites
+- GS Ball Event enabled after the Elite 4 like in the VC release of Crystal.
 
 This isn't much compared to other hacks, and it isn't (or will be) all that different to the other 251 hacks out there. But its mostly for me to play, honestly.
 
+Running Shoes and 60fps taken from the Doublespeed-60fps-Running-Shoes branch of Fellowship of the Roms fork of Pokecrystal.
 
 # Pokémon Crystal [![Build Status][ci-badge]][ci]
 
