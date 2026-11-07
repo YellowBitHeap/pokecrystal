@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-Usage: unnamed.py [-h] [-r rootdir] [-l count] pokecrystal.sym
+Usage: unnamed.py [-h] [-r rootdir] [-l count] pokecrystal.sym...
 
-Parse the symfile to find unnamed symbols.
+Parse the symfiles to find unnamed symbols.
 """
 
 import sys
@@ -34,8 +34,8 @@ def read_string(file):
 # Fix broken pipe when using `head`
 signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
-parser = argparse.ArgumentParser(description='Parse the symfile to find unnamed symbols')
-parser.add_argument('symfile', type=argparse.FileType('r'),
+parser = argparse.ArgumentParser(description='Parse the symfiles to find unnamed symbols')
+parser.add_argument('symfiles', nargs='+', type=argparse.FileType('r'),
 	help='the list of symbols')
 parser.add_argument('-r', '--rootdir', type=str,
 	help='scan the output files to obtain a list of files with unnamed symbols (note: will rebuild objects as necessary)')
@@ -44,31 +44,32 @@ parser.add_argument('-l', '--list', type=int, default=0,
 args = parser.parse_args()
 
 # Get list of object files
-objects = None
+objects = []
 if args.rootdir:
 	for line in subprocess.Popen(['make', '-C', args.rootdir, '-s', '-p', 'DEBUG=1'],
 			stdout=subprocess.PIPE).stdout.read().decode().split('\n'):
-		if line.startswith('pokecrystal_obj :='):
-			objects = line[len('pokecrystal_obj :='):].strip().split()
-			break
-	else:
+		for version in ['', '11', '_au', '_debug', '11_debug', '11_vc']:
+			if line.startswith(f'pokecrystal{version}_obj :='):
+				objects.extend(line[len(f'pokecrystal{version}_obj :='):].strip().split())
+	if not objects:
 		print('Error: Object files not found!', file=sys.stderr)
 		sys.exit(1)
 
-# Scan all unnamed symbols from the symfile
+# Scan all unnamed symbols from the symfiles
 symbols_total = 0
 symbols = set()
-for line in args.symfile:
-	line = line.split(';')[0].strip()
-	split = line.split(' ')
-	if len(split) < 2:
-		continue
+for symfile in args.symfiles:
+	for line in symfile:
+		line = line.split(';')[0].strip()
+		split = line.split(' ')
+		if len(split) < 2:
+			continue
 
-	symbols_total += 1
+		symbols_total += 1
 
-	symbol = ' '.join(split[1:]).strip()
-	if symbol[-3:].lower() == split[0][-3:].lower():
-		symbols.add(symbol)
+		symbol = ' '.join(split[1:]).strip()
+		if symbol[-3:].lower() == split[0][-3:].lower():
+			symbols.add(symbol)
 
 # If no object files were provided, just print what we know and exit
 unnamed_percent = 100 * (symbols_total - len(symbols)) / symbols_total
@@ -90,14 +91,14 @@ for objfile in objects:
 		elif magic == b'RGB9':
 			obj_ver = 10 + unpack_from('<I', file)[0]
 
-		if obj_ver not in [6, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23]:
+		if obj_ver not in [6, 10, 11, 12, 13] and obj_ver < 15:
 			print(f"Error: File '{objfile}' is of an unknown format.", file=sys.stderr)
 			sys.exit(1)
 
 		num_symbols = unpack_from('<I', file)[0]
 		unpack_from('<I', file) # skip num sections
 
-		if obj_ver in [16, 17, 18, 19, 20, 21, 22, 23]:
+		if obj_ver >= 16:
 			node_filenames = []
 			num_nodes = unpack_from('<I', file)[0]
 			for x in range(num_nodes):
@@ -117,7 +118,7 @@ for objfile in objects:
 			sym_type = symtype(unpack_from('<B', file)[0] & 0x7f)
 			if sym_type == symtype.IMPORT:
 				continue
-			if obj_ver in [16, 17, 18, 19, 20, 21, 22, 23]:
+			if obj_ver >= 16:
 				sym_fileno = unpack_from('<I', file)[0]
 				sym_filename = node_filenames[sym_fileno]
 			else:
